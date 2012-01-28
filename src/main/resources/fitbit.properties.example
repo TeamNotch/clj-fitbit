@@ -1,6 +1,6 @@
 fitbit.api_url=https://api.fitbit.com
-fitbit.consumer_key=d6e298ef81a14545b6378efea9ba2a22
-fitbit.consumer_secret=cd558e676d2942239af2274b56780c04
+fitbit.consumer_key=key_here
+fitbit.consumer_secret=secret_here
 
 fitbit.test_user.email=eli.bryan+testfitbit0@gmail.com
 fitbit.test_user.password=badpassword
