@@ -13,5 +13,6 @@
   :test-path "src/test/clojure"
   :java-source-path "src/main/java"
   :resources-path "src/main/resources"
+  :dev-resources-path "src/test/resources"
   )
 
