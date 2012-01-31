@@ -4,5 +4,7 @@ fitbit.consumer_secret=secret_here
 
 fitbit.test_user.email=eli.bryan+testfitbit0@gmail.com
 fitbit.test_user.password=badpassword
-
+fitbit.test_user.token=token_here
+fitbit.test_user.token_secret=token_secret_here
+fitbit.test_user.id=fitbit_user_id_here
 

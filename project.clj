@@ -14,5 +14,7 @@
   :java-source-path "src/main/java"
   :resources-path "src/main/resources"
   :dev-resources-path "src/test/resources"
+  :compile-path "target/classes"
+  :javac-options {:destdir "target/classes/"}
   )
 

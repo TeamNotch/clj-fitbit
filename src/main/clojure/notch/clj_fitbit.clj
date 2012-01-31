@@ -1,9 +1,12 @@
 (ns notch.clj-fitbit
+  (:use clojure.tools.logging)
   (:import [com.fitbit.api.client FitbitAPIEntityCache FitbitApiCredentialsCache FitbitApiSubscriptionStorage])
   (:import [com.fitbit.api.client.service FitbitAPIClientService])
   (:require [clojure.data.json :as json])
   (:require [clojure.string :as str])
   )
+
+
 
 (defn- load-properties
   "load and return a properties file"
@@ -45,9 +48,11 @@
 (def ^{:dynamic true} *client*)
 
 (defn with-user* [user func]
-  (binding [*client* (create-fitbit-client (:token user) (:token_secret user))]
-    (func)
-    )
+  (try
+    (binding [*client* (create-fitbit-client (:token user) (:token_secret user))]
+      (func))
+    (catch Exception e
+      (error e)))
   )
 
 (defmacro ^{:private true} with-user [user & body]
@@ -56,17 +61,24 @@
 (defn- fitbit-call [user uri]
   (with-user user
     (-> *client*
-      (.get (str fitbit_api_url "/1/user/-/" uri) true)
+      (.get (str fitbit_api_url "/1/" uri) true)
       (.asString)
       (json/read-json)
       )
     )
   )
 
-(defn- fitbit-call-post [user uri]
+(defn- map-to-postparameters [m]
+  (->> m
+    (map #(com.fitbit.api.client.http.PostParameter. (name (key %)) (str (val %))))
+    (into-array com.fitbit.api.client.http.PostParameter)
+    ))
+
+(defn- fitbit-call-post [user uri params]
+(debug (str uri " " params))
   (with-user user
     (-> *client*
-      (.post (str fitbit_api_url "/1/user/-/" uri) true)
+      (.post (str fitbit_api_url "/1/" uri) (map-to-postparameters params) true)
       (.asString)
       (json/read-json)
       )
@@ -76,9 +88,9 @@
 (defn- fitbit-call-delete [user uri]
   (with-user user
     (-> *client*
-      (.delete (str fitbit_api_url "/1/user/-/" uri) true)
+      (.delete (str fitbit_api_url "/1/" uri) true)
       (.asString)
-      (json/read-json)
+      ;(json/read-json)
       )
     )
   )
@@ -105,48 +117,84 @@
 
 (defn get-userinfo [user]
   (:user
-    (fitbit-call user "profile.json")))
+    (fitbit-call user "user/-/profile.json")))
 
 #_(defn get-steps [user start_day stop_day]
     (:activities-steps
-      (fitbit-call user (str "activities/steps/date/" start_day "/" stop_day ".json"))))
+      (fitbit-call user (str "user/-/activities/steps/date/" start_day "/" stop_day ".json"))))
 
 (defn get-minutes-asleep [user start_day stop_day]
   (:sleep-minutesAsleep
-    (fitbit-call user (str "sleep/minutesAsleep/date/" start_day "/" stop_day ".json"))))
+    (fitbit-call user (str "user/-/sleep/minutesAsleep/date/" start_day "/" stop_day ".json"))))
 
 (defn get-minutes-awake [user start_day stop_day]
   (:sleep-minutesAwake
-    (fitbit-call user (str "sleep/minutesAwake/date/" start_day "/" stop_day ".json"))))
+    (fitbit-call user (str "user/-/sleep/minutesAwake/date/" start_day "/" stop_day ".json"))))
 
 (defn get-minutes-in-bed [user start_day stop_day]
   (:sleep-timeInBed
-    (fitbit-call user (str "sleep/timeInBed/date/" start_day "/" stop_day ".json"))))
+    (fitbit-call user (str "user/-/sleep/timeInBed/date/" start_day "/" stop_day ".json"))))
 
 (defn get-bedtime [user start_day stop_day]
   (:sleep-startTime
-    (fitbit-call user (str "sleep/startTime/date/" start_day "/" stop_day ".json"))))
+    (fitbit-call user (str "user/-/sleep/startTime/date/" start_day "/" stop_day ".json"))))
 
 (defn get-bedtime [user start_day stop_day]
   (:sleep-startTime
-    (fitbit-call user (str "sleep/startTime/date/" start_day "/" stop_day ".json"))))
+    (fitbit-call user (str "user/-/sleep/startTime/date/" start_day "/" stop_day ".json"))))
 
 (defn get-sleep [user day]
   (:sleep
-    (fitbit-call user (str "sleep/date/" day".json"))))
+    (fitbit-call user (str "user/-/sleep/date/" day".json"))))
 
 (defn get-steps [user day]
   (:dataset
     (:activities-steps-intraday
-      (fitbit-call user (str "activities/steps/date/" day "/1d.json")))))
+      (fitbit-call user (str "user/-/activities/steps/date/" day "/1d.json")))))
 
 (defn subscribe [user subscriber_id]
-  (fitbit-call-post user (str "apiSubscriptions/" subscriber_id  ".json")))
+  (fitbit-call-post user (str "user/-/apiSubscriptions/" subscriber_id  ".json")))
 
 (defn get-subscriptions [user]
-  (fitbit-call user (str "apiSubscriptions.json"))
+  (fitbit-call user (str "user/-/apiSubscriptions.json"))
   )
 
 (defn delete-subscription [user subscriber_id]
-  (fitbit-call-delete user (str "apiSubscriptions/" subscriber_id ".json"))
+  (fitbit-call-delete user (str "user/-/apiSubscriptions/" subscriber_id ".json"))
   )
+
+(defn search-foods [user query]
+  (fitbit-call user (str "foods/search.json?query=" (java.net.URLEncoder/encode query)))
+  )
+
+(defn browse-activities [user]
+  (fitbit-call user (str "activities.json" ))
+  )
+
+#_(defn log-food [user food_name ^Number amount date]
+  (let [params {:foodName food_name
+                :mealTypeId 7
+                :unitId 304
+                :amount amount
+                :date date}]
+    (fitbit-call-post user (str "user/-/foods/log.json") params))
+
+  )
+
+(defn log-activity [user activity_id date start_time duration]
+  (let [params {:activityId activity_id
+                :date date
+                :startTime start_time
+                :durationMillis duration}]
+    (fitbit-call-post user (str "user/-/activities.json") params))
+
+  )
+
+(defn get-activities [user day]
+  (:activities
+    (fitbit-call user (str "user/-/activities/date/" day".json"))))
+
+(defn delete-activity [user activity_log_id]
+  (fitbit-call-delete user (str "user/-/activities/" activity_log_id ".json")))
+
+
