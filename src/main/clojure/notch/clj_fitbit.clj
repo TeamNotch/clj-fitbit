@@ -6,8 +6,6 @@
   (:require [clojure.string :as str])
   )
 
-
-
 (defn- load-properties
   "load and return a properties file"
   [filename]
@@ -151,6 +149,14 @@
   (:dataset
     (:activities-steps-intraday
       (fitbit-call user (str "user/-/activities/steps/date/" day "/1d.json")))))
+
+(defn get-steps-series
+  "Get total steps for a day over a range of days"
+  [user start_day stop_day]
+  (:activities-steps
+      (fitbit-call user (str "user/-/activities/steps/date/" start_day "/" stop_day ".json"))))
+
+
 
 (defn subscribe [user subscriber_id]
   (fitbit-call-post user (str "user/-/apiSubscriptions/" subscriber_id  ".json")))
