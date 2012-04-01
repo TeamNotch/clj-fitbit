@@ -16,5 +16,8 @@
   :dev-resources-path "src/test/resources"
   :compile-path "target/classes"
   :javac-options {:destdir "target/classes/" :encoding "UTF-8"}
+
+  :deploy-repositories {"releases" "file:../public-repo/releases"
+                        "snapshots" "file:../public-repo/snapshots"}
   )
 
