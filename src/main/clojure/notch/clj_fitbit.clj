@@ -2,6 +2,7 @@
   (:use clojure.tools.logging)
   (:import [com.fitbit.api.client FitbitAPIEntityCache FitbitApiCredentialsCache FitbitApiSubscriptionStorage])
   (:import [com.fitbit.api.client.service FitbitAPIClientService])
+  (:import [com.fitbit.api.FitbitApiError])
   (:require [clojure.data.json :as json])
   (:require [clojure.string :as str])
   )

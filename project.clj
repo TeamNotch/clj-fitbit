@@ -8,6 +8,7 @@
                  [commons-lang/commons-lang "2.3"]
                  [commons-logging/commons-logging "1.1"]
                  [clj-webdriver "0.5.0-alpha5"]
+                 [com.fitbit/fitbit4j "1.0.22"]
                  ]
   :source-path "src/main/clojure"
   :test-path "src/test/clojure"
@@ -19,5 +20,9 @@
 
   :deploy-repositories {"releases" "file:../public-repo/releases"
                         "snapshots" "file:../public-repo/snapshots"}
+
+  :repositories { ;"fitbit-gh" {:url "https://raw.github.com/fitbit/fitbit4j/tree/gh-pages/release"}
+                 "notch-public" {:url "http://raw.github.com/TeamNotch/public-repo/master/releases"}
+                 }
   )
 
