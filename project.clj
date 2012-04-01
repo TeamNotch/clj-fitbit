@@ -21,8 +21,9 @@
   :deploy-repositories {"releases" "file:../public-repo/releases"
                         "snapshots" "file:../public-repo/snapshots"}
 
-  :repositories { ;"fitbit-gh" {:url "https://raw.github.com/fitbit/fitbit4j/tree/gh-pages/release"}
-                 "notch-public" {:url "http://raw.github.com/TeamNotch/public-repo/master/releases"}
+  :repositories { "fitbit-release" {:url "https://raw.github.com/Fitbit/fitbit4j/gh-pages/release"
+                                    :snapshots false}
+
                  }
   )
 
