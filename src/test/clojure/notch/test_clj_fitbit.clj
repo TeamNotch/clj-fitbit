@@ -45,7 +45,7 @@
 
 
 (get-userinfo fitbit_test_user)
-(get-steps-series fitbit_test_user "2012-01-01" "2012-02-01")
+(get-steps-series fitbit_test_user (:memberSince (get-userinfo fitbit_test_user)) "2015-01-01")
 
 (deftest test-clj-fitbit
   ;;Test oauth stuff by authing and getting the user info
@@ -59,7 +59,7 @@
 
   ;;Smoke test getting steps series
   (is (< 0
-        (count (get-steps-series fitbit_test_user "2012-01-01" "2012-02-01"))))
+        (count (get-steps-series fitbit_test_user (:memberSince userinfo) "2050-01-01"))))
   )
 
 ;(run-tests 'notch.test-clj-fitbit)

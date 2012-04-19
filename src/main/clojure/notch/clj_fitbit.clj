@@ -47,11 +47,13 @@
 (def ^{:dynamic true} *client*)
 
 (defn with-user* [user func]
+  {:pre [(and (:token user) (:token_secret user))]}
   (try
     (binding [*client* (create-fitbit-client (:token user) (:token_secret user))]
       (func))
     (catch Exception e
-      (error e)))
+      (do (error e)
+        (throw e))))
   )
 
 (defmacro ^{:private true} with-user [user & body]
