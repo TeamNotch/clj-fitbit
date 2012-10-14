@@ -162,8 +162,8 @@
 (defn get-calories-series
   "Get total calories for a day over a range of days"
   [user start_day stop_day]
-  (:activities-calories
-    (fitbit-call user (str "user/-/activities/calories/date/" start_day "/" stop_day ".json"))))
+  (:activities-tracker-calories
+    (fitbit-call user (str "user/-/activities/tracker/calories/date/" start_day "/" stop_day ".json"))))
 
 (defn get-weight-series
   "Get weight for a day over a range of days"

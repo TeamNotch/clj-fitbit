@@ -12,6 +12,8 @@
 (def fitbit_test_user {:token testuser_token
                   :token_secret testuser_tokensecret })
 
+(get-calories-series fitbit_test_user (:memberSince (get-userinfo fitbit_test_user)) "2015-01-01")
+
 (deftest test-basics
     (is (not-empty (get-userinfo fitbit_test_user)))
     (is (not-empty (get-steps-series fitbit_test_user (:memberSince (get-userinfo fitbit_test_user)) "2015-01-01")))
@@ -22,7 +24,7 @@
 
   )
 
-(run-tests 'notch.test-clj-fitbit)
+;(run-tests 'notch.test-clj-fitbit)
 
 
 
