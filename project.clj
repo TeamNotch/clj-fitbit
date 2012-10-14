@@ -7,7 +7,6 @@
                  [org.json/json "20090211"]
                  [commons-lang/commons-lang "2.3"]
                  [commons-logging/commons-logging "1.1"]
-                 [clj-webdriver "0.5.0-alpha5"]
                  [com.fitbit/fitbit4j "1.0.22"]
                  ]
   :source-path "src/main/clojure"

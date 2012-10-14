@@ -159,6 +159,30 @@
   (:activities-steps
       (fitbit-call user (str "user/-/activities/steps/date/" start_day "/" stop_day ".json"))))
 
+(defn get-calories-series
+  "Get total calories for a day over a range of days"
+  [user start_day stop_day]
+  (:activities-calories
+    (fitbit-call user (str "user/-/activities/calories/date/" start_day "/" stop_day ".json"))))
+
+(defn get-weight-series
+  "Get weight for a day over a range of days"
+  [user start_day stop_day]
+  (:body-weight
+    (fitbit-call user (str "user/-/body/weight/date/" start_day "/" stop_day ".json"))))
+
+(defn get-calories-in-series
+  "Get calories in for a day over a range of days"
+  [user start_day stop_day]
+  (:foods-log-caloriesIn
+  (fitbit-call user (str "user/-/foods/log/caloriesIn/date/" start_day "/" stop_day ".json"))))
+
+(defn get-water-in-series
+  "Get water in for a day over a range of days"
+  [user start_day stop_day]
+  (:foods-log-water
+    (fitbit-call user (str "user/-/foods/log/water/date/" start_day "/" stop_day ".json"))))
+
 
 
 (defn subscribe [user subscriber_id]
